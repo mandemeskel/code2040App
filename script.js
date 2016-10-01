@@ -119,8 +119,15 @@ function reverseString( str ) {
 } 
 
 
+// the angular factory will use to create problem objects
 app.factory( "problemService", function( ajaxService ) {
   
+  // the problem class
+  // @param data_url string the url tog et the problem from
+  // @param validate_url string the url to send the validate solution request to
+  // @param mainFn function function that actually solves the problem
+  // @param recieveData function the funciton that handles and saves the problem we recieve from code2040
+  // @param beforeSendRequest function called before a validate request is sent
   function Problem( data_url, validate_url, mainFn, recieveData, beforeSendRequest ) {
     
     this.data_url = data_url;
@@ -130,21 +137,34 @@ app.factory( "problemService", function( ajaxService ) {
     this.response = "";
     this.problem = undefined;
     this.solution = undefined;
+    
+    // function that actually solves the problem
     this.mainFn = mainFn;
+    
+    // the funciton that handles and saves the problem we recieve from code2040
     this.recieveData = recieveData;
+    
     // this.beforeGetRequest = beforeGetRequest;
+    // called before a validate request is sent, expected to setup data with
+    // the right parameters
     this.beforeSendRequest = beforeSendRequest;
     
+    // closure that handles succesful response from call to validate_url
+    // @param obj object the object to saves the response data to
+    // @return function returns a function that sets obj.reponse to response.data
     this.onValidated = function( obj ) {
       return function( response ) {
         obj.response = response.data;
       }
     };
     
+    // set the data by JSON stringifying passed data
+    // @param data object data to JSOn stringify and save to this object
     this.setData = function( data ) {
       this.data = JSON.stringify( data );
     }
     
+    // requests the problem from the server i.e. calls data_url
     this.getData = function( ) {
       
       this.setData( {
@@ -161,6 +181,8 @@ app.factory( "problemService", function( ajaxService ) {
       
     };
     
+    // validates the solution i.e. calls validate_url
+    // @call_main_fn bool is true calls mainFn function to solve the problem
     this.validateSolution = function( call_main_fn ) {
       
       if( this.beforeSendRequest )
