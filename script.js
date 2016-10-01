@@ -100,6 +100,20 @@ function mainCtrl( $scope, ajaxService, problemService ) {
     }
   );
   
+  // setup problem 3
+  var problem3 = new PorblemService(
+    "http://challenge.code2040.org/api/haystack",
+    "http://challenge.code2040.org/api/haystack/validate",
+    function() {
+      problem3.solution = findNeedle( problem3.problem, problem3.haystack );
+    },
+    function( response ) {
+      problem3.problem = response.needle;
+      problem3.haystack = response.haystack;
+      console.log( response );
+    }
+  );
+  
   // add to problems array to dispaly UI
   $scope.problems.push( $scope.part2b );
   
@@ -117,6 +131,11 @@ function reverseString( str ) {
   
   return rstr;
 } 
+
+
+function findNeedle( needle, haystack ) {
+  
+}
 
 
 // the angular factory will use to create problem objects

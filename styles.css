@@ -1,0 +1,72 @@
+ul.list {
+    display: block;
+    list-style: none;
+    padding-left: 0;
+}
+
+ul.list li.item {
+    display: block;
+    background-color: aqua;
+    padding: 5px 10px;
+    border: 1px solid black;
+}
+
+.input-group {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.item button {
+    background-color: white;
+    padding: 5px;
+    border: none;
+    min-width: 100px;
+    box-shadow: 2px 6px 0px black;
+    margin-right: 15px;
+    transition: 0.5s;
+    /* box-shadow: 3px 2px 0px black; */
+    position: relative;
+    display: inline-block;
+    width: 30%;
+}
+
+.item button:hover {
+    /* transform: scale( 0.8 ); */
+    box-shadow: 1px 2px 0px black;
+    /* box-shadow: 9px 7px 0px black; */
+    /* top: 3px; */
+    /* left: 2px; */
+}
+
+.item input,
+.item textarea {
+    width: 65%;
+    display: inline-block;
+    min-width: 100px;
+    background-color: transparent;
+    outline: none;
+    transition: 0.5s;
+    border: none;
+}
+
+
+.item input {
+    border-bottom: 2px solid black;
+    padding-left: 3px;
+    /* top: 0px; */
+    height: 30px;
+}
+
+.item textarea {
+    padding: 2px;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    position: relative;
+    top: 20px;
+}
+
+.item input:hover,
+.item textarea:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+}
