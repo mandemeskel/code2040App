@@ -84,6 +84,7 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
   
   // create Problem class to solve problem 2
   $scope.part2b = new problemFactory( 
+    "Problem 2",
     "http://challenge.code2040.org/api/reverse",
     "http://challenge.code2040.org/api/reverse/validate",
     function() {
@@ -99,6 +100,7 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
   
   // setup problem 3
   var problem3 = new problemFactory(
+    "Problem 3",
     "http://challenge.code2040.org/api/haystack",
     "http://challenge.code2040.org/api/haystack/validate",
     function() {
@@ -114,9 +116,30 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
     }
   );
   
+  
+  // setup problem 4
+  var problem4 = new problemFactory(
+    "Problem 4",
+    "http://challenge.code2040.org/api/prefix",
+    "http://challenge.code2040.org/api/prefix/validate",
+    function() {
+      problem4.solution = findNoPrefix( 
+        problem4.problem.prefix, 
+        problem4.problem.array );
+    },
+    function() {
+      problem4.setData( {
+                         token: TOKEN,
+                         array: problem4.solution
+                      } );
+    }
+  );
+  
+  
   // add to problems array to dispaly UI
   $scope.problems.push( $scope.part2b );
   $scope.problems.push( problem3 );
+  $scope.problems.push( problem4 );
   
 }
 app.controller( "mainCtrl", mainCtrl );
@@ -140,6 +163,39 @@ function findNeedle( needle, haystack ) {
     if( needle == haystack[n] ) return n;
 }
 
+// return an array contianing only the strings that DO NOT start with prefix
+function findNoPrefix( prefix, haystack ) {
+  var len = haystack.length,
+      no_prefix = [];
+  
+  for( let n=0; n < len; n++ )
+    if( !hasPrefix( prefix, haystack[n] ) ) no_prefix.push( haystack[n] );
+  
+  return no_prefix;
+}
+
+// checks if string has a prefix
+function hasPrefix( prefix, string ) {
+  // if the strings are equal, then the prefix is in the string
+  if( prefix == string ) return true;
+  
+  var prefix_len = prefix.length;
+  // if prefix length is greater than the string's length
+  // prefix can't be in the string
+  // if the length is equal to the string length but the prefix doesn't equal string
+  // then they are two different strings, no prefix in string
+  if( prefix_len >= string.length ) return false;
+  
+  // look for prefix in the string
+  for( var n=0; n < prefix_len; n++ )
+    // if there are any characters that are not equal
+    // then the string does not have the prefix
+    if( prefix[n] != string[n] ) return false;
+    
+  return true;
+}
+
+
 
 // the angular factory will use to create problem objects
 app.factory( "problemFactory", function( ajaxService ) {
@@ -149,8 +205,9 @@ app.factory( "problemFactory", function( ajaxService ) {
   // @param validate_url string the url to send the validate solution request to
   // @param mainFn function function that actually solves the problem
   // @param beforeSendRequest function called before a validate request is sent
-  function Problem( data_url, validate_url, mainFn, beforeSendRequest ) {
+  function Problem( name, data_url, validate_url, mainFn, beforeSendRequest ) {
     
+    this.name = name;
     this.data_url = data_url;
     this.validater_url = validate_url;
     this.data = "";

@@ -39,6 +39,8 @@
       
       <li class="item" ng-repeat="problem in problems">
         
+        <h2>{{ problem.name }}</h2>
+        
         <div class="input-group">
           <button ng-click="problem.getData()">get probelm</button>
           <input ng-model="problem.problem" type="text" />
