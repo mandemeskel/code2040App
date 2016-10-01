@@ -106,7 +106,8 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
     function() {
       problem3.solution = findNeedle( 
         problem3.problem.needle, 
-        problem3.problem.haystack );
+        problem3.problem.haystack 
+      );
     },
     function() {
       problem3.setData( {
@@ -125,7 +126,8 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
     function() {
       problem4.solution = findNoPrefix( 
         problem4.problem.prefix, 
-        problem4.problem.array );
+        problem4.problem.array 
+      );
     },
     function() {
       problem4.setData( {
@@ -135,11 +137,33 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
     }
   );
   
+    
+  
+  // setup problem 5
+  var problem5 = new problemFactory(
+    "Problem 5",
+    "http://challenge.code2040.org/api/dating",
+    "http://challenge.code2040.org/api/dating/validate",
+    function() {
+      problem5.solution = addSecToDateStamp( 
+        problem5.problem.interval, 
+        problem5.problem.datestamp 
+      );
+    },
+    function() {
+      problem5.setData( {
+                         token: TOKEN,
+                         datestamp: problem5.solution
+                      } );
+    }
+  );
+  
   
   // add to problems array to dispaly UI
   $scope.problems.push( $scope.part2b );
   $scope.problems.push( problem3 );
   $scope.problems.push( problem4 );
+  $scope.problems.push( problem5 );
   
 }
 app.controller( "mainCtrl", mainCtrl );
@@ -163,7 +187,7 @@ function findNeedle( needle, haystack ) {
     if( needle == haystack[n] ) return n;
 }
 
-// return an array contianing only the strings that DO NOT start with prefix
+// return an array contianing only the strings that DO NOT start with prefix, problem4
 function findNoPrefix( prefix, haystack ) {
   var len = haystack.length,
       no_prefix = [];
@@ -174,7 +198,7 @@ function findNoPrefix( prefix, haystack ) {
   return no_prefix;
 }
 
-// checks if string has a prefix
+// checks if string has a prefix, problem4
 function hasPrefix( prefix, string ) {
   // if the strings are equal, then the prefix is in the string
   if( prefix == string ) return true;
@@ -195,6 +219,37 @@ function hasPrefix( prefix, string ) {
   return true;
 }
 
+/**
+ * sample: "2016-10-04T13:28:22Z"
+ *          YYYY-MM-DDThh:mm:ssZ
+ * T - time
+ * Z - Zulu Time, UTC
+ * 
+ */ 
+// adds seconds to datestamp, IS0 8601 datestamp, and returns the result, problem5
+// @return strings returns a ISO datestamp string
+function addSecToDateStamp( seconds, datestamp ) {
+  // create js date object from datestamp
+  var date = new Date( datestamp );
+  
+  // convert date and seconds into milliseconds and add them together
+  var ms = date.getTime() + ( seconds * 1000 );
+  
+  // reset date to ms
+  date.setTime( ms );
+  
+  // get string to send to server
+  var new_datestamp = date.toISOString();
+  
+  // toISOString adds milliseconds, ".00Z", to the datestamp, we don't need them
+  // the regex looks for any substr that starts with ".", ends with "Z",
+  // and contains at least one zero
+  new_datestamp = new_datestamp.replace( /\.0+Z/, "Z" );
+  
+  console.log( seconds, datestamp, ms, new_datestamp );
+  
+  return new_datestamp;
+}
 
 
 // the angular factory will use to create problem objects
@@ -268,6 +323,7 @@ app.factory( "problemFactory", function( ajaxService ) {
     // @call_main_fn bool is true calls mainFn function to solve the problem
     this.validateSolution = function( call_main_fn ) {
       
+      // setup data for ajax request
       if( this.beforeSendRequest )
         this.beforeSendRequest();
       
@@ -276,8 +332,12 @@ app.factory( "problemFactory", function( ajaxService ) {
       //   string: this.solution
       // } );
       
+      // generate the solution
       if( call_main_fn )
         this.mainFn();
+        
+      // clear response from any previous calls to api
+      if( this.response ) this.response = "";
     
       ajaxService.request( 
         "POST",
