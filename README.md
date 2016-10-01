@@ -7,7 +7,7 @@ Some would say this was over engineered - I am one of those people - but this wa
 The assessment was centered around making a call to their API to get a the problem and sending the solution back to their API for validation.
 
 
-Stack:
+# Stack: <br/>
 HTML5 <br/>
 CSS3 - media queries and transitions <br/>
 JS/EMACS6 - sort of, I did use 'let' and promises XD <br/>
