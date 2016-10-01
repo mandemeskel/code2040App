@@ -1,5 +1,6 @@
 # My CODE2040 Technical Assessment
 Visit the site I created to solve the problems in the assessment here: https://mandemeskel.github.io/code2040App/  <br/>
+<br/>
 You can't make the API calls necessary to see the site working because the site is hosted securely, HTTPS, while the API is using HTTP. This discrepancy makes modern browsers panic; modern browsers deny all requests to insecure, HTTP, resources while in a secure, HTTPS, environment, regardless of CORS, cross-origin resource sharing. However, you can still enjoy the magic of CSS3, just can't make API calls.
 
 This was fun; I enjoyed using AngularJS.
