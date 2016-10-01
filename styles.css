@@ -8,8 +8,9 @@ ul.list li.item {
     display: block;
     background-color: aqua;
     padding: 5px 10px;
-/*     border: 1px solid black; */
-    margin-bottom: 10px
+    /*     border: 1px solid black; */
+    margin-bottom: 10px;
+    color: black;
 }
 
 ul.list li.item:last-child {
@@ -73,6 +74,9 @@ ul.list li.item:nth-child(even) {
     border-bottom: 2px solid black;
     position: relative;
     top: 20px;
+    overflow: visible;
+    /* height: auto; */
+    /* width: auto; */
 }
 
 .item input:hover,
@@ -87,4 +91,9 @@ ul.list li.item:nth-child(even) {
     width: 100%;
     border-bottom: 3px solid black;
     margin-bottom: 30px;
+}
+
+body {
+    background-color: black;
+    color: white;
 }

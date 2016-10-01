@@ -83,20 +83,21 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
   };
   
   // create Problem class to solve problem 2
-  $scope.part2b = new problemFactory( 
+  var problem2 = new problemFactory( 
     "Problem 2",
     "http://challenge.code2040.org/api/reverse",
     "http://challenge.code2040.org/api/reverse/validate",
     function() {
-      $scope.part2b.solution = reverseString( $scope.part2b.problem );
+      problem2.solution = reverseString( problem2.problem );
     },
     function() {
-      $scope.part2b.setData( {
+      problem2.setData( {
                       token: TOKEN,
-                      string: $scope.part2b.solution 
+                      string: problem2.solution 
                     } );
     }
   );
+  problem2.description = "Get a string from the API, reverse it, and send the reverse string back to the API";
   
   // setup problem 3
   var problem3 = new problemFactory(
@@ -116,7 +117,7 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
                       } );
     }
   );
-  
+  problem3.description = "Get a needle and haystack from the API, find index of needle in haystack, and send index back to the API.";
   
   // setup problem 4
   var problem4 = new problemFactory(
@@ -136,8 +137,7 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
                       } );
     }
   );
-  
-    
+  problem4.description = "Get a prefix and array of strings from the API, find all strings in the array WITHOUT the prefix, and send those strings back to the API."
   
   // setup problem 5
   var problem5 = new problemFactory(
@@ -157,10 +157,10 @@ function mainCtrl( $scope, ajaxService, problemFactory ) {
                       } );
     }
   );
-  
+  problem5.description = "Get a ISO 8601 datestamp and interval in seconds, add the interval to the datestamp, and send the resulting datestamp, in IS0 8601, back to the API.";
   
   // add to problems array to dispaly UI
-  $scope.problems.push( $scope.part2b );
+  $scope.problems.push( problem2 );
   $scope.problems.push( problem3 );
   $scope.problems.push( problem4 );
   $scope.problems.push( problem5 );
@@ -246,13 +246,13 @@ function addSecToDateStamp( seconds, datestamp ) {
   // and contains at least one zero
   new_datestamp = new_datestamp.replace( /\.0+Z/, "Z" );
   
-  console.log( seconds, datestamp, ms, new_datestamp );
+  // console.log( seconds, datestamp, ms, new_datestamp );
   
   return new_datestamp;
 }
 
 
-// the angular factory will use to create problem objects
+// the angular factory we will use to create problem objects
 app.factory( "problemFactory", function( ajaxService ) {
   
   // the problem class
@@ -327,11 +327,6 @@ app.factory( "problemFactory", function( ajaxService ) {
       if( this.beforeSendRequest )
         this.beforeSendRequest();
       
-      // this.setData( {
-      //   token: TOKEN,
-      //   string: this.solution
-      // } );
-      
       // generate the solution
       if( call_main_fn )
         this.mainFn();
@@ -402,3 +397,28 @@ function ajaxFail( data, status, headers, config ) {
 
 // add service to app
 app.factory( "ajaxService", ajaxService );
+
+// filter to clean to turn js objects into "human readable" JSON strings
+app.filter( "stringfyObjects", function() {
+  
+  return function( input ) {
+    
+    // console.log( input );
+    
+    // some objects, nested dictionaries and other vagries can not be converted
+    // we need a try catch for security
+    try {
+      
+      var string = JSON.stringify( input );
+      return string;
+      
+    } catch( e ) {
+      
+      console.error( "stringfyObjects: ", e );
+      return input;
+      
+    }
+    
+  };
+    
+} );

@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>CODE2040 App</title>
+    <title>CODE2040 Technical Assessment</title>
 
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.png">
     <link href="styles.css" rel="stylesheet">
 
 
@@ -17,6 +17,8 @@
   
   <body ng-app="main" ng-controller="mainCtrl">
     
+    <h1>Michael's <a href="code2040.org" target="_blank">CODE2040</a> Technical Assessment</h1>
+    
     <!--<div>-->
     <!--  <button ng-click="part2.getString()">get string</button>-->
     <!--  <input ng-model="part2.string" type="text" />-->
@@ -25,25 +27,19 @@
     <!--  <button ng-click="part2.sendString()">send reverse string</button>-->
     <!--  <textarea ng-model="part2.response" type="text" /></textarea>-->
     <!--</div>-->
-    
-    <!--<div>-->
-    <!--  <button ng-click="part2b.getData()">get string</button>-->
-    <!--  <input ng-model="part2b.problem" type="text" />-->
-    <!--  <button ng-click="part2b.mainFn()">reverse string</button>-->
-    <!--  <input ng-model="part2b.solution" type="text" />-->
-    <!--  <button ng-click="part2b.validateSolution()">send reverse string</button>-->
-    <!--  <textarea ng-model="part2b.response" type="text" /></textarea>-->
-    <!--</div>-->
   
+    <!-- problems -->
     <ul class="list">
       
       <li class="item" ng-repeat="problem in problems">
         
         <h2>{{ problem.name }}</h2>
         
+        <p>{{ problem.description }}</p>
+        
         <div class="input-group">
           <button ng-click="problem.getData()">get probelm</button>
-          <input ng-model="problem.problem" type="text" />
+          <textarea />{{ problem.problem | stringfyObjects }}</textarea>
         </div>
         
         <div class="input-group">
@@ -53,12 +49,13 @@
         
         <div class="input-group">
           <button ng-click="problem.validateSolution( true )">validate</button>
-          <textarea ng-model="problem.response" type="text" /></textarea>
+          <textarea ng-model="problem.response" /></textarea>
         </div>
         
       </li>
       
     </ul>
+    <!-- /problems -->
   
   </body>
   
