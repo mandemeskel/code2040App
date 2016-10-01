@@ -40,18 +40,18 @@
       <li class="item" ng-repeat="problem in problems">
         
         <div class="input-group">
-          <button ng-click="part2b.getData()">get probelm</button>
-          <input ng-model="part2b.problem" type="text" />
+          <button ng-click="problem.getData()">get probelm</button>
+          <input ng-model="problem.problem" type="text" />
         </div>
         
         <div class="input-group">
-          <button ng-click="part2b.mainFn()">solve</button>
-          <input ng-model="part2b.solution" type="text" />
+          <button ng-click="problem.mainFn()">solve</button>
+          <input ng-model="problem.solution" type="text" />
         </div>
         
         <div class="input-group">
-          <button ng-click="part2b.validateSolution( true )">validate</button>
-          <textarea ng-model="part2b.response" type="text" /></textarea>
+          <button ng-click="problem.validateSolution( true )">validate</button>
+          <textarea ng-model="problem.response" type="text" /></textarea>
         </div>
         
       </li>

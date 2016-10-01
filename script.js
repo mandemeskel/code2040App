@@ -8,7 +8,7 @@ app.run( function() {
 
 
 // create main controller
-function mainCtrl( $scope, ajaxService, problemService ) {
+function mainCtrl( $scope, ajaxService, problemFactory ) {
   
   // api token
   $scope.token = "6e17924deb9b769d7b15b5085d7a7b1a";
@@ -83,40 +83,40 @@ function mainCtrl( $scope, ajaxService, problemService ) {
   };
   
   // create Problem class to solve problem 2
-  $scope.part2b = new problemService( 
+  $scope.part2b = new problemFactory( 
     "http://challenge.code2040.org/api/reverse",
     "http://challenge.code2040.org/api/reverse/validate",
     function() {
       $scope.part2b.solution = reverseString( $scope.part2b.problem );
     },
-    function( response ) {
-      $scope.part2b.problem = response.data;
-    },
     function() {
       $scope.part2b.setData( {
                       token: TOKEN,
                       string: $scope.part2b.solution 
-                    });
+                    } );
     }
   );
   
   // setup problem 3
-  var problem3 = new PorblemService(
+  var problem3 = new problemFactory(
     "http://challenge.code2040.org/api/haystack",
     "http://challenge.code2040.org/api/haystack/validate",
     function() {
-      problem3.solution = findNeedle( problem3.problem, problem3.haystack );
+      problem3.solution = findNeedle( 
+        problem3.problem.needle, 
+        problem3.problem.haystack );
     },
-    function( response ) {
-      problem3.problem = response.needle;
-      problem3.haystack = response.haystack;
-      console.log( response );
+    function() {
+      problem3.setData( {
+                         token: TOKEN,
+                         needle: problem3.solution
+                      } );
     }
   );
   
   // add to problems array to dispaly UI
   $scope.problems.push( $scope.part2b );
-  
+  $scope.problems.push( problem3 );
   
 }
 app.controller( "mainCtrl", mainCtrl );
@@ -132,22 +132,24 @@ function reverseString( str ) {
   return rstr;
 } 
 
-
+// look for the needle in the haystack, problem 3
 function findNeedle( needle, haystack ) {
+  var len = haystack.length;
   
+  for( let n=0; n < len; n++  )
+    if( needle == haystack[n] ) return n;
 }
 
 
 // the angular factory will use to create problem objects
-app.factory( "problemService", function( ajaxService ) {
+app.factory( "problemFactory", function( ajaxService ) {
   
   // the problem class
   // @param data_url string the url tog et the problem from
   // @param validate_url string the url to send the validate solution request to
   // @param mainFn function function that actually solves the problem
-  // @param recieveData function the funciton that handles and saves the problem we recieve from code2040
   // @param beforeSendRequest function called before a validate request is sent
-  function Problem( data_url, validate_url, mainFn, recieveData, beforeSendRequest ) {
+  function Problem( data_url, validate_url, mainFn, beforeSendRequest ) {
     
     this.data_url = data_url;
     this.validater_url = validate_url;
@@ -161,7 +163,12 @@ app.factory( "problemService", function( ajaxService ) {
     this.mainFn = mainFn;
     
     // the funciton that handles and saves the problem we recieve from code2040
-    this.recieveData = recieveData;
+    this.recieveData = function() {
+      var obj = this;
+      return function( response ) {
+        obj.problem = response.data;
+      }
+    };
     
     // this.beforeGetRequest = beforeGetRequest;
     // called before a validate request is sent, expected to setup data with
@@ -195,7 +202,7 @@ app.factory( "problemService", function( ajaxService ) {
         this.data_url,
         this.data,
         this.header,
-        this.recieveData
+        this.recieveData()
       )
       
     };

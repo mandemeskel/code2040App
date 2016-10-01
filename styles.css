@@ -8,7 +8,16 @@ ul.list li.item {
     display: block;
     background-color: aqua;
     padding: 5px 10px;
-    border: 1px solid black;
+/*     border: 1px solid black; */
+    margin-bottom: 10px
+}
+
+ul.list li.item:last-child {
+    margin-bottom: 0;
+}
+
+ul.list li.item:nth-child(even) {
+    background-color: #B76EB8;
 }
 
 .input-group {
