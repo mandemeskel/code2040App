@@ -1,4 +1,5 @@
 var app = angular.module( "main", [] );
+var TOKEN = "6e17924deb9b769d7b15b5085d7a7b1a";
 
 /* init */
 app.run( function() {
@@ -7,10 +8,13 @@ app.run( function() {
 
 
 // create main controller
-function mainCtrl( $scope, ajaxService ) {
+function mainCtrl( $scope, ajaxService, problemService ) {
   
   // api token
   $scope.token = "6e17924deb9b769d7b15b5085d7a7b1a";
+  
+  // problems array, used in index.html to create UI for each problem
+  $scope.problems = [];
   
   // part 2 of the code2040 app, reverse a string
   $scope.part2 = {
@@ -78,6 +82,28 @@ function mainCtrl( $scope, ajaxService ) {
     }
   };
   
+  // create Problem class to solve problem 2
+  $scope.part2b = new problemService( 
+    "http://challenge.code2040.org/api/reverse",
+    "http://challenge.code2040.org/api/reverse/validate",
+    function() {
+      $scope.part2b.solution = reverseString( $scope.part2b.problem );
+    },
+    function( response ) {
+      $scope.part2b.problem = response.data;
+    },
+    function() {
+      $scope.part2b.setData( {
+                      token: TOKEN,
+                      string: $scope.part2b.solution 
+                    });
+    }
+  );
+  
+  // add to problems array to dispaly UI
+  $scope.problems.push( $scope.part2b );
+  
+  
 }
 app.controller( "mainCtrl", mainCtrl );
 
@@ -86,14 +112,88 @@ app.controller( "mainCtrl", mainCtrl );
 // @return reversed string
 function reverseString( str ) {
   var rstr = "";
-  for( var n=str.length-1; n >= 0; n-- )
+  for( let n=str.length-1; n >= 0; n-- )
     rstr += str[n];
   
   return rstr;
 } 
 
+
+app.factory( "problemService", function( ajaxService ) {
+  
+  function Problem( data_url, validate_url, mainFn, recieveData, beforeSendRequest ) {
+    
+    this.data_url = data_url;
+    this.validater_url = validate_url;
+    this.data = "";
+    this.header = { "content-type": "application/json" };
+    this.response = "";
+    this.problem = undefined;
+    this.solution = undefined;
+    this.mainFn = mainFn;
+    this.recieveData = recieveData;
+    // this.beforeGetRequest = beforeGetRequest;
+    this.beforeSendRequest = beforeSendRequest;
+    
+    this.onValidated = function( obj ) {
+      return function( response ) {
+        obj.response = response.data;
+      }
+    };
+    
+    this.setData = function( data ) {
+      this.data = JSON.stringify( data );
+    }
+    
+    this.getData = function( ) {
+      
+      this.setData( {
+                    token: TOKEN
+                  } );
+      
+      ajaxService.request( 
+        "POST",
+        this.data_url,
+        this.data,
+        this.header,
+        this.recieveData
+      )
+      
+    };
+    
+    this.validateSolution = function( call_main_fn ) {
+      
+      if( this.beforeSendRequest )
+        this.beforeSendRequest();
+      
+      // this.setData( {
+      //   token: TOKEN,
+      //   string: this.solution
+      // } );
+      
+      if( call_main_fn )
+        this.mainFn();
+    
+      ajaxService.request( 
+        "POST",
+        this.validater_url,
+        this.data,
+        this.header,
+        this.onValidated( this )
+      )
+      
+    };
+    
+  }
+  
+  return Problem;
+  
+} );
+
+
+
 // setup service to make ajax calls with
-function ajaxService ( $http, $location ) {
+function ajaxService( $http, $location ) {
  
  return ({
    
@@ -136,4 +236,4 @@ function ajaxFail( data, status, headers, config ) {
 }
 
 // add service to app
-app.service( "ajaxService", ajaxService );
+app.factory( "ajaxService", ajaxService );

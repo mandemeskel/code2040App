@@ -17,15 +17,47 @@
   
   <body ng-app="main" ng-controller="mainCtrl">
     
-    <div>
-      <button ng-click="part2.getString()">get string</button>
-      <input ng-model="part2.string" type="text" />
-      <button ng-click="part2.reverseString()">reverse string</button>
-      <input ng-model="part2.rstring" type="text" />
-      <button ng-click="part2.sendString()">send reverse string</button>
-      <textarea ng-model="part2.response" type="text" /></textarea>
-    </div>
+    <!--<div>-->
+    <!--  <button ng-click="part2.getString()">get string</button>-->
+    <!--  <input ng-model="part2.string" type="text" />-->
+    <!--  <button ng-click="part2.reverseString()">reverse string</button>-->
+    <!--  <input ng-model="part2.rstring" type="text" />-->
+    <!--  <button ng-click="part2.sendString()">send reverse string</button>-->
+    <!--  <textarea ng-model="part2.response" type="text" /></textarea>-->
+    <!--</div>-->
     
+    <!--<div>-->
+    <!--  <button ng-click="part2b.getData()">get string</button>-->
+    <!--  <input ng-model="part2b.problem" type="text" />-->
+    <!--  <button ng-click="part2b.mainFn()">reverse string</button>-->
+    <!--  <input ng-model="part2b.solution" type="text" />-->
+    <!--  <button ng-click="part2b.validateSolution()">send reverse string</button>-->
+    <!--  <textarea ng-model="part2b.response" type="text" /></textarea>-->
+    <!--</div>-->
+  
+    <ul class="list">
+      
+      <li class="item" ng-repeat="problem in problems">
+        
+        <div class="input-group">
+          <button ng-click="part2b.getData()">get probelm</button>
+          <input ng-model="part2b.problem" type="text" />
+        </div>
+        
+        <div class="input-group">
+          <button ng-click="part2b.mainFn()">solve</button>
+          <input ng-model="part2b.solution" type="text" />
+        </div>
+        
+        <div class="input-group">
+          <button ng-click="part2b.validateSolution()">validate</button>
+          <textarea ng-model="part2b.response" type="text" /></textarea>
+        </div>
+        
+      </li>
+      
+    </ul>
+  
   </body>
   
 </html>
