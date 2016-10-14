@@ -19,7 +19,7 @@ ul.list li.item:last-child {
 }
 
 ul.list li.item:nth-child(even) {
-    background-color: #B76EB8;
+    background-color: #FF00FF;
 }
 
 ul.list li.item:hover {
